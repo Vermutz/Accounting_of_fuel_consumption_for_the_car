@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         if(Consumption!=0) {
             setTitle("Расход топлива = " + Consumption+"л/100км");
         }else{
-            setTitle("Учет расходов");
+            setTitle(getString(R.string.Title_Cost_Accounting));
         }
     }
 
@@ -144,9 +144,9 @@ public class MainActivity extends AppCompatActivity {
         boxadapter.notifyDataSetChanged();
         double Consumption = consumption();
         if(Consumption!=0) {
-            setTitle("Расход топлива = " + Consumption+"л/100км");
+            setTitle(getString(R.string.Title_Average_Fuel_Consumption) + Consumption+getString(R.string.Title_Unit_Of_Measurement));
         }else{
-            setTitle("Учет расходов");
+            setTitle(getString(R.string.Title_Cost_Accounting));
         }
     }
 

@@ -40,7 +40,7 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_or_remove_expenses);
 
-        setTitle("Учет расходов");
+        setTitle(getString(R.string.Title_Cost_Accounting));
 
         Data = (EditText) findViewById(R.id.ACOREeditText);           //Дата
         CostTyp = (EditText) findViewById(R.id.ACOREeditText2);       //Тип затрат
@@ -69,13 +69,13 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
             Data.setText(cursor.getString(cursor.getColumnIndex("Data")));
             if(cursor.getInt(cursor.getColumnIndex("Petrol"))==1){
                 CheckBoxPetrol.setChecked(true);
-                CostTyp.setHint("Одометр (км)");
+                CostTyp.setHint(getString(R.string.Odometr));
                 CostTyp.setFilters(CheckBoxOnInPutFilter);
                 CostTyp.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 CostTyp.setText(String.valueOf(cursor.getDouble(cursor.getColumnIndex("Mileage"))));
             }else{
                 CheckBoxPetrol.setChecked(false);
-                CostTyp.setHint("Тип затрат");
+                CostTyp.setHint(getString(R.string.Cost_Type));
                 CostTyp.setFilters(CheckBoxOffInPutFilter);
                 CostTyp.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
                 CostTyp.setText(cursor.getString(cursor.getColumnIndex("CostType")));
@@ -374,11 +374,11 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if(isChecked){
-                CostTyp.setHint("Одометр (км)");
+                CostTyp.setHint(getString(R.string.Odometr));
                 CostTyp.setFilters(CheckBoxOnInPutFilter);
                 CostTyp.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
             }else{
-                CostTyp.setHint("Тип затрат");
+                CostTyp.setHint(getString(R.string.Cost_Type));
                 CostTyp.setFilters(CheckBoxOffInPutFilter);
                 CostTyp.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
             }

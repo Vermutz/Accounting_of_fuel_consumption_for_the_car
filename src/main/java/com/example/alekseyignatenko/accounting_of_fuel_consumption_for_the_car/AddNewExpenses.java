@@ -42,7 +42,7 @@ public class AddNewExpenses extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_expenses);
 
-        setTitle("Учет расходов");
+        setTitle(R.string.Title_Cost_Accounting);
 
         Data = (EditText) findViewById(R.id.editText);           //Дата
         CostTyp = (EditText) findViewById(R.id.editText2);       //Тип затрат
@@ -372,11 +372,11 @@ public class AddNewExpenses extends AppCompatActivity {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if(isChecked){
-                CostTyp.setHint("Одометр (км)");
+                CostTyp.setHint(getString(R.string.Odometr));
                 CostTyp.setFilters(CheckBoxOnInPutFilter);
                 CostTyp.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
             }else{
-                CostTyp.setHint("Тип затрат");
+                CostTyp.setHint(getString(R.string.Cost_Type));
                 CostTyp.setFilters(CheckBoxOffInPutFilter);
                 CostTyp.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
             }

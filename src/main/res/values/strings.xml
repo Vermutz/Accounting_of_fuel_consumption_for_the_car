@@ -1,4 +1,18 @@
 <resources>
     <string name="app_name">Accounting_of_fuel_consumption_for_the_car</string>
     <string name="title_activity_add_new_expenses">AddNewExpenses</string>
+    <string name="Delet_Expenses_Button">Удалить</string>
+    <string name="Change_Expenses_Button">Изменить</string>
+    <string name="Petrol">Бензин</string>
+    <string name="Cost_Type">Тип затрат</string>
+    <string name="Quantity">Количество (л)</string>
+    <string name="Price">Цена (руб/л)</string>
+    <string name="Cost">Стоимость (руб)</string>
+    <string name="Data">Дата</string>
+    <string name="Save_Button">Сохранить</string>
+    <string name="Add_New_Expenses_Button">Добавить запись</string>
+    <string name="Odometr">Одометр (км)</string>
+    <string name="Title_Cost_Accounting">Учет расходов</string>
+    <string name="Title_Average_Fuel_Consumption">Средний расход топлива =</string>
+    <string name="Title_Unit_Of_Measurement">л/100км</string>
 </resources>
