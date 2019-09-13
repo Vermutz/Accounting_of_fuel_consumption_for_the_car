@@ -1,5 +1,7 @@
 package com.example.alekseyignatenko.accounting_of_fuel_consumption_for_the_car;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -19,14 +21,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class ChangeOrRemoveExpenses extends AppCompatActivity {
 
     private DBHelper dbHelper;
     private Context context;
     private Integer ID;
+    private ExpensesDataPicker EDP;
 
-    private EditText Data;
+    protected Button Data;
     private EditText CostTyp;
     private EditText Quantity;
     private EditText Price;
@@ -42,7 +46,7 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
 
         setTitle(getString(R.string.Title_Cost_Accounting));
 
-        Data = (EditText) findViewById(R.id.ACOREeditText);           //Дата
+        Data = (Button) findViewById(R.id.ACOREButtonData);           //Дата
         CostTyp = (EditText) findViewById(R.id.ACOREeditText2);       //Тип затрат
         Quantity = (EditText) findViewById(R.id.ACOREeditText3);      //Количество
         Price = (EditText) findViewById(R.id.ACOREeditText4);       //Цена
@@ -62,11 +66,14 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
 
         context = this;
 
+        EDP = new ExpensesDataPicker();
+        String SQLDATA = "";
+
         dbHelper = new DBHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.query("Expenses",null,"id = ?",new String[]{ID.toString()},null,null,null);
         if(cursor.moveToFirst()){
-            Data.setText(cursor.getString(cursor.getColumnIndex("Data")));
+            SQLDATA = cursor.getString(cursor.getColumnIndex("Data"));
             if(cursor.getInt(cursor.getColumnIndex("Petrol"))==1){
                 CheckBoxPetrol.setChecked(true);
                 CostTyp.setHint(getString(R.string.Odometr));
@@ -86,17 +93,25 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
         }
         dbHelper.close();
 
-        Data.addTextChangedListener(new DataTextWatcher(Data));
+        EDP.ExpensesDataPicker(context,SQLDATA,Data);
 
-        Data.setOnFocusChangeListener(DataOnFocusChangeListner);
+        Data.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(ExpensesDataPicker.DIALOG_DATE);
+            }
+        });
 
         CheckBoxPetrol.setOnCheckedChangeListener(PetrolOnCheckedChangeListner);
 
-        Cost.addTextChangedListener(CostTextWatcher);
+        //Cost.addTextChangedListener(CostTextWatcher);
+        Cost.setOnFocusChangeListener(CostOnFocusChangeListner);
 
-        Price.addTextChangedListener(PriceTextWatcher);
+        //Price.addTextChangedListener(PriceTextWatcher);
+        Price.setOnFocusChangeListener(PriceOnFocusChangeListner);
 
-        Quantity.addTextChangedListener(QuantityTextWatcher);
+        //Quantity.addTextChangedListener(QuantityTextWatcher);
+        Quantity.setOnFocusChangeListener(QuantityOnFocusChangeListner);
 
         Remove.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,7 +129,7 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
         Change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ValidationCheck(Data,CostTyp,Quantity,Price,Cost)){
+                if(ValidationCheck(CostTyp,Quantity,Price,Cost)){
                     dbHelper = new DBHelper(context);
                     ContentValues cv = new ContentValues();
                     SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -151,224 +166,89 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
         });
     }
 
-    private TextWatcher CostTextWatcher = new TextWatcher() {
+    private View.OnFocusChangeListener CostOnFocusChangeListner = new View.OnFocusChangeListener() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
+        public void onFocusChange(View v, boolean hasFocus) {
             if(CheckForText(Cost)){
                 if (!CheckComposition(Price,Quantity,Cost)) {
                     if(CheckForText(Quantity)) {
                         Double cost = Double.valueOf(Cost.getText().toString());
                         Double quantity = Double.valueOf(Quantity.getText().toString());
                         Double price = (double) Math.round((cost / quantity) * 100) / 100;
-                        Price.removeTextChangedListener(PriceTextWatcher);
+                        //Price.removeTextChangedListener(PriceTextWatcher);
                         Price.setText(price.toString());
-                        Price.addTextChangedListener(PriceTextWatcher);
+                        //Price.addTextChangedListener(PriceTextWatcher);
                     }else if(CheckForText(Price)){
                         Double cost = Double.valueOf(Cost.getText().toString());
                         Double price = Double.valueOf(Price.getText().toString());
                         Double quantity = (double) Math.round((cost / price) * 1000) / 1000;
-                        Quantity.removeTextChangedListener(QuantityTextWatcher);
+                        //Quantity.removeTextChangedListener(QuantityTextWatcher);
                         Quantity.setText(quantity.toString());
-                        Quantity.addTextChangedListener(QuantityTextWatcher);
+                        //Quantity.addTextChangedListener(QuantityTextWatcher);
                     }
                 }
             }else {
-                Cost.removeTextChangedListener(CostTextWatcher);
+                //Cost.removeTextChangedListener(CostTextWatcher);
                 Cost.setText("");
-                Cost.addTextChangedListener(CostTextWatcher);
+                //Cost.addTextChangedListener(CostTextWatcher);
             }
         }
     };
-    private TextWatcher PriceTextWatcher = new TextWatcher() {
+    private View.OnFocusChangeListener PriceOnFocusChangeListner = new View.OnFocusChangeListener() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
+        public void onFocusChange(View v, boolean hasFocus) {
             if(CheckForText(Price)){
                 if (!CheckComposition(Price,Quantity,Cost)) {
                     if (CheckForText(Quantity)) {
                         Double SetCost = (double) Math.round(CompositionEditText(Price, Quantity)*100)/100;
-                        Cost.removeTextChangedListener(CostTextWatcher);
+                        //Cost.removeTextChangedListener(CostTextWatcher);
                         Cost.setText(SetCost.toString());
-                        Cost.addTextChangedListener(CostTextWatcher);
+                        //Cost.addTextChangedListener(CostTextWatcher);
                     }
 
                 }
             }else {
-                Cost.removeTextChangedListener(CostTextWatcher);
+                //Cost.removeTextChangedListener(CostTextWatcher);
                 Cost.setText("");
-                Cost.addTextChangedListener(CostTextWatcher);
-                Price.removeTextChangedListener(this);
+                //Cost.addTextChangedListener(CostTextWatcher);
+                //Price.removeTextChangedListener(this);
                 //Price.clearFocus();
                 Price.setText("");
-                Price.addTextChangedListener(this);
+                //Price.addTextChangedListener(this);
                 //Price.requestFocus();
             }
         }
     };
-    private TextWatcher QuantityTextWatcher = new TextWatcher() {
+    private View.OnFocusChangeListener QuantityOnFocusChangeListner = new View.OnFocusChangeListener() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
+        public void onFocusChange(View v, boolean hasFocus) {
             if(CheckForText(Quantity)){
                 if (!CheckComposition(Price,Quantity,Cost)) {
                     if (CheckForText(Price)) {
                         Double SetCost = (double) Math.round(CompositionEditText(Price, Quantity)*100)/100;
-                        Cost.removeTextChangedListener(CostTextWatcher);
+                        //Cost.removeTextChangedListener(CostTextWatcher);
                         Cost.setText(SetCost.toString());
-                        Cost.addTextChangedListener(CostTextWatcher);
+                        //Cost.addTextChangedListener(CostTextWatcher);
                     }
                 }
             }else {
-                Cost.removeTextChangedListener(CostTextWatcher);
+                //Cost.removeTextChangedListener(CostTextWatcher);
                 Cost.setText("");
-                Cost.addTextChangedListener(CostTextWatcher);
-                Quantity.removeTextChangedListener(this);
+                //Cost.addTextChangedListener(CostTextWatcher);
+                //Quantity.removeTextChangedListener(this);
                 Quantity.setText("");
-                Quantity.addTextChangedListener(this);
+                //Quantity.addTextChangedListener(this);
             }
         }
     };
 
-    private View.OnFocusChangeListener DataOnFocusChangeListner = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if(!hasFocus) {
-                String DataEditText = Data.getText().toString();
-                if(DataEditText.length()<3&DataEditText.length()!=0){
-                    StringBuilder datatoday = new StringBuilder(getDataToday());
-                    datatoday.delete(0,2);
-                    String CorrectData;
-                    if(DataEditText.length()<2){
-                        CorrectData = "0"+DataEditText+datatoday;
-                    }else {
-                        CorrectData=DataEditText+datatoday;
-                    }
-                    Data.setText(CorrectData);
-                }
-                if(DataEditText.length()<6&DataEditText.length()>3){
-                    StringBuilder datatoday = new StringBuilder(getDataToday());
-                    datatoday.delete(0,4);
-                    String CorrectData;
-                    if(DataEditText.length()<5){
-                        CorrectData =""+RemoveDataSpecialCharacters(DataEditText).insert(2,0)+datatoday;
-                    }else {
-                        CorrectData=""+RemoveDataSpecialCharacters(DataEditText)+datatoday;
-                    }
-                    Data.setText(CorrectData);
-                }
-                if(DataEditText.length()>6){
-                    String CorrectData="";
-                    StringBuilder datatoday = new StringBuilder(getDataToday());
-                    StringBuilder DataEditTextStringBilder = RemoveDataSpecialCharacters(DataEditText);
-                    switch(DataEditText.length()){
-                        case 7:
-                            StringBuilder Year =new StringBuilder(""
-                                    +datatoday.charAt(4)
-                                    +datatoday.charAt(5)
-                                    +datatoday.charAt(6)
-                                    +DataEditTextStringBilder.charAt(4));
-                            if(Integer.valueOf(""+Year)<=Integer.valueOf(""+datatoday.delete(0,4))) {
-                                CorrectData = "" + DataEditTextStringBilder.delete(4, 5)+Year;
-                            }else{
-                                int cen =Character.getNumericValue(Year.charAt(2));
-                                if(cen!=0) {
-                                    cen--;
-                                    Year.replace(2,3,Integer.toString(cen));
-                                }else{
-                                    cen=9;
-                                    int cen2 =Character.getNumericValue(Year.charAt(1));
-                                    if (cen2!=0){
-                                        cen2--;
-                                        Year.replace(1,3,(Integer.toString(cen2)+Integer.toString(cen)));
-                                    }else {
-                                        cen2=9;
-                                        int cen3 = Character.getNumericValue(Year.charAt(0));
-                                        cen3--;
-                                        Year.replace(0,3,(Integer.toString(cen3)+Integer.toString(cen2)+Integer.toString(cen)));
-                                    }
-                                }
-                                CorrectData = ""+DataEditTextStringBilder.delete(4,5)+Year;
-                            }
-                            break;
-                        case 8:
-                            StringBuilder Year2 =new StringBuilder(""
-                                    +datatoday.charAt(4)
-                                    +datatoday.charAt(5)
-                                    +DataEditTextStringBilder.charAt(4)
-                                    +DataEditTextStringBilder.charAt(5));
-                            if(Integer.valueOf(""+Year2)<=Integer.valueOf(""+datatoday.delete(0,4))) {
-                                CorrectData = "" + DataEditTextStringBilder.delete(4, 6)+Year2;
-                            }else{
-                                int cen =Character.getNumericValue(Year2.charAt(1));
-                                if(cen!=0){
-                                    cen--;
-                                    Year2.replace(1,2,Integer.toString(cen));
-                                }else {
-                                    cen=9;
-                                    int cen2 = Character.getNumericValue(Year2.charAt(0));
-                                    cen2--;
-                                    Year2.replace(0,2,(Integer.toString(cen2)+Integer.toString(cen)));
-                                };
-                                CorrectData = ""+DataEditTextStringBilder.delete(4,6)+Year2;
-                            }
-                            break;
-                        case 9:
-
-                            StringBuilder Year3 =new StringBuilder(""
-                                    +datatoday.charAt(4)
-                                    +DataEditTextStringBilder.charAt(4)
-                                    +DataEditTextStringBilder.charAt(5)
-                                    +DataEditTextStringBilder.charAt(6));
-                            if(Integer.valueOf(""+Year3)<=Integer.valueOf(""+datatoday.delete(0,4))) {
-                                CorrectData = "" + DataEditTextStringBilder.delete(4, 7)+Year3;
-                            }else{
-                                int cen =Character.getNumericValue(Year3.charAt(0));
-
-                                cen--;
-                                Year3.replace(0,1,Integer.toString(cen));
-
-                                CorrectData = ""+DataEditTextStringBilder.delete(4,7)+Year3;
-                            }
-                            break;
-                        case 10:
-                            CorrectData=""+DataEditTextStringBilder;
-                            break;
-                        default:break;
-                    }
-                    Data.setText(CorrectData);
-
-                }
-            }
+    protected Dialog onCreateDialog(int id){
+        if(id==ExpensesDataPicker.DIALOG_DATE){
+            DatePickerDialog DPD = new DatePickerDialog(this,EDP.myCallBack,EDP.Year,EDP.Month,EDP.Day);
+            return DPD;
         }
-    };
+        return super.onCreateDialog(id);
+    }
 
     private CompoundButton.OnCheckedChangeListener PetrolOnCheckedChangeListner = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -385,16 +265,10 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
         }
     };
 
-    private  boolean ValidationCheck(EditText Data,EditText CostType,EditText Quantity,EditText Price,EditText Cost){
-        if(CheckForText(Data)&CheckForText(CostType)&CheckForText(Quantity)&CheckForText(Price)&CheckForText(Cost)){
+    private  boolean ValidationCheck(EditText CostType,EditText Quantity,EditText Price,EditText Cost){
+        if(CheckForText(CostType)&CheckForText(Quantity)&CheckForText(Price)&CheckForText(Cost)){
             if(CheckComposition(Price,Quantity,Cost)){
-                if(CheckData(Data)){
                     return true;
-                }else {
-                    //дата не корректна
-                    Toast.makeText(this, "Не корректно введена дата", Toast.LENGTH_LONG).show();
-                    return false;
-                }
             }else {
                 //цена, количество, стоимость не соответствуют
                 Toast.makeText(this, "Не коррекино введены цена или стоимость", Toast.LENGTH_LONG).show();
@@ -431,74 +305,5 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
         }else {
             return false;
         }
-    }
-    private boolean CheckData(EditText Data){
-        String data =   Data.getText().toString();
-        if(data.length()==10) {
-            StringBuilder Day = new StringBuilder();
-            StringBuilder Month = new StringBuilder();
-            StringBuilder Year = new StringBuilder();
-
-            if(data.charAt(0)==(char)48){
-                Day.append(data.charAt(1));
-            }else{
-                Day.append(data.charAt(0));
-                Day.append(data.charAt(1));
-            }
-            if(data.charAt(3)==(char)48){
-                Month.append(data.charAt(4));
-            }else {
-                Month.append(data.charAt(3));
-                Month.append(data.charAt(4));
-            }
-
-            Year.append(data.charAt(6));
-            Year.append(data.charAt(7));
-            Year.append(data.charAt(9));
-            Year.append(data.charAt(9));
-
-            if((Integer.parseInt(Day.toString())<=31)
-                    &(Integer.parseInt(Day.toString())>0)
-                    &(Integer.parseInt(Month.toString())<=12)
-                    &(Integer.parseInt(Month.toString())>0)
-                    &(Integer.parseInt(Year.toString())>0)){
-                return true;
-            }else {
-                return false;
-            }
-        }else{
-            return false;
-        }
-    }
-
-    private String getDataToday(){
-        Calendar c = Calendar.getInstance();
-        String days,mounths,years,DataToday;
-        if(c.get(Calendar.DAY_OF_MONTH)>9){
-            days = ""+c.get(Calendar.DAY_OF_MONTH);
-        }else{
-            days="0"+c.get(Calendar.DAY_OF_MONTH);
-        }
-        if(c.get(Calendar.MONTH)>9){
-            mounths = ""+c.get(Calendar.MONTH);
-        }else{
-            mounths="0"+c.get(Calendar.MONTH);
-        }
-        years =""+c.get(Calendar.YEAR);
-        DataToday = days+mounths+years;
-        return DataToday;
-    };
-
-    private StringBuilder RemoveDataSpecialCharacters(String str){
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < str.length(); i++)
-        {
-            if ((str.charAt(i) >= '0' && str.charAt(i) <= '9'))
-            {
-                sb.append(str.charAt(i));
-            }
-        }
-
-        return sb;
     }
 }
