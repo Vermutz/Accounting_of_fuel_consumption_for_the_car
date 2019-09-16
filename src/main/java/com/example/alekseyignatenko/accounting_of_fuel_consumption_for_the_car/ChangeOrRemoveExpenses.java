@@ -102,16 +102,14 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
             }
         });
 
+        CompositionTextWatcher compositionTextWatcher = new CompositionTextWatcher(Price,Quantity,Cost);
+
+        Price.addTextChangedListener(compositionTextWatcher);
+        Quantity.addTextChangedListener(compositionTextWatcher);
+        Cost.addTextChangedListener(compositionTextWatcher);
+
         CheckBoxPetrol.setOnCheckedChangeListener(PetrolOnCheckedChangeListner);
 
-        //Cost.addTextChangedListener(CostTextWatcher);
-        Cost.setOnFocusChangeListener(CostOnFocusChangeListner);
-
-        //Price.addTextChangedListener(PriceTextWatcher);
-        Price.setOnFocusChangeListener(PriceOnFocusChangeListner);
-
-        //Quantity.addTextChangedListener(QuantityTextWatcher);
-        Quantity.setOnFocusChangeListener(QuantityOnFocusChangeListner);
 
         Remove.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,82 +163,6 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
             }
         });
     }
-
-    private View.OnFocusChangeListener CostOnFocusChangeListner = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if(CheckForText(Cost)){
-                if (!CheckComposition(Price,Quantity,Cost)) {
-                    if(CheckForText(Quantity)) {
-                        Double cost = Double.valueOf(Cost.getText().toString());
-                        Double quantity = Double.valueOf(Quantity.getText().toString());
-                        Double price = (double) Math.round((cost / quantity) * 100) / 100;
-                        //Price.removeTextChangedListener(PriceTextWatcher);
-                        Price.setText(price.toString());
-                        //Price.addTextChangedListener(PriceTextWatcher);
-                    }else if(CheckForText(Price)){
-                        Double cost = Double.valueOf(Cost.getText().toString());
-                        Double price = Double.valueOf(Price.getText().toString());
-                        Double quantity = (double) Math.round((cost / price) * 1000) / 1000;
-                        //Quantity.removeTextChangedListener(QuantityTextWatcher);
-                        Quantity.setText(quantity.toString());
-                        //Quantity.addTextChangedListener(QuantityTextWatcher);
-                    }
-                }
-            }else {
-                //Cost.removeTextChangedListener(CostTextWatcher);
-                Cost.setText("");
-                //Cost.addTextChangedListener(CostTextWatcher);
-            }
-        }
-    };
-    private View.OnFocusChangeListener PriceOnFocusChangeListner = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if(CheckForText(Price)){
-                if (!CheckComposition(Price,Quantity,Cost)) {
-                    if (CheckForText(Quantity)) {
-                        Double SetCost = (double) Math.round(CompositionEditText(Price, Quantity)*100)/100;
-                        //Cost.removeTextChangedListener(CostTextWatcher);
-                        Cost.setText(SetCost.toString());
-                        //Cost.addTextChangedListener(CostTextWatcher);
-                    }
-
-                }
-            }else {
-                //Cost.removeTextChangedListener(CostTextWatcher);
-                Cost.setText("");
-                //Cost.addTextChangedListener(CostTextWatcher);
-                //Price.removeTextChangedListener(this);
-                //Price.clearFocus();
-                Price.setText("");
-                //Price.addTextChangedListener(this);
-                //Price.requestFocus();
-            }
-        }
-    };
-    private View.OnFocusChangeListener QuantityOnFocusChangeListner = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if(CheckForText(Quantity)){
-                if (!CheckComposition(Price,Quantity,Cost)) {
-                    if (CheckForText(Price)) {
-                        Double SetCost = (double) Math.round(CompositionEditText(Price, Quantity)*100)/100;
-                        //Cost.removeTextChangedListener(CostTextWatcher);
-                        Cost.setText(SetCost.toString());
-                        //Cost.addTextChangedListener(CostTextWatcher);
-                    }
-                }
-            }else {
-                //Cost.removeTextChangedListener(CostTextWatcher);
-                Cost.setText("");
-                //Cost.addTextChangedListener(CostTextWatcher);
-                //Quantity.removeTextChangedListener(this);
-                Quantity.setText("");
-                //Quantity.addTextChangedListener(this);
-            }
-        }
-    };
 
     protected Dialog onCreateDialog(int id){
         if(id==ExpensesDataPicker.DIALOG_DATE){
