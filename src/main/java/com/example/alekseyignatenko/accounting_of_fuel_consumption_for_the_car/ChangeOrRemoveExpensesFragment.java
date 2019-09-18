@@ -1,5 +1,6 @@
 package com.example.alekseyignatenko.accounting_of_fuel_consumption_for_the_car;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
@@ -7,26 +8,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.Calendar;
-import java.util.Date;
-
-public class ChangeOrRemoveExpenses extends AppCompatActivity {
+public class ChangeOrRemoveExpensesFragment extends Fragment {
 
     private DBHelper dbHelper;
-    private Context context;
+    //private Context context;
     private Integer ID;
     private ExpensesDataPicker EDP;
 
@@ -40,36 +42,39 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
     private InputFilter CheckBoxOffInPutFilter[] = new InputFilter[]{};
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_or_remove_expenses);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_change_or_remove_expenses,container,false);
 
-        setTitle(getString(R.string.Title_Cost_Accounting));
 
-        Data = (Button) findViewById(R.id.ACOREButtonData);           //Дата
-        CostTyp = (EditText) findViewById(R.id.ACOREeditText2);       //Тип затрат
-        Quantity = (EditText) findViewById(R.id.ACOREeditText3);      //Количество
-        Price = (EditText) findViewById(R.id.ACOREeditText4);       //Цена
-        Cost = (EditText) findViewById(R.id.ACOREeditText5);         //Стоимость
+        getActivity().setTitle(R.string.Title_Change_Or_Remove_Expenses);
 
-        CheckBoxPetrol = (CheckBox)findViewById(R.id.checkBox2);
+        Data = (Button) view.findViewById(R.id.ACOREButtonData);           //Дата
+        CostTyp = (EditText) view.findViewById(R.id.ACOREeditText2);       //Тип затрат
+        Quantity = (EditText) view.findViewById(R.id.ACOREeditText3);      //Количество
+        Price = (EditText) view.findViewById(R.id.ACOREeditText4);       //Цена
+        Cost = (EditText) view.findViewById(R.id.ACOREeditText5);         //Стоимость
 
-        final Button Remove =(Button) findViewById(R.id.ACOREbutton);
-        final Button Change =(Button) findViewById(R.id.ACOREbutton2);
+        CheckBoxPetrol = (CheckBox)view.findViewById(R.id.checkBox2);
 
-        Intent intent = getIntent();
-        ID = intent.getIntExtra("ID",1);
+        Quantity.setGravity(Gravity.RIGHT);
+        Price.setGravity(Gravity.RIGHT);
+        Cost.setGravity(Gravity.RIGHT);
+
+        final Button Remove =(Button) view.findViewById(R.id.ACOREbutton);
+        final Button Change =(Button) view.findViewById(R.id.ACOREbutton2);
+
+        ID = getArguments().getInt("ID");
 
         Quantity.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(15,3)});
         Price.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(15,2)});
         Cost.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(15,2)});
 
-        context = this;
+        //context = this;
 
         EDP = new ExpensesDataPicker();
         String SQLDATA = "";
 
-        dbHelper = new DBHelper(context);
+        dbHelper = new DBHelper(getActivity());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.query("Expenses",null,"id = ?",new String[]{ID.toString()},null,null,null);
         if(cursor.moveToFirst()){
@@ -93,12 +98,12 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
         }
         dbHelper.close();
 
-        EDP.ExpensesDataPicker(context,SQLDATA,Data);
+        EDP.ExpensesDataPicker(getActivity(),SQLDATA,Data);
 
         Data.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog(ExpensesDataPicker.DIALOG_DATE);
+                getActivity().showDialog(ExpensesDataPicker.DIALOG_DATE);
             }
         });
 
@@ -114,13 +119,15 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
         Remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbHelper = new DBHelper(context);
+                dbHelper = new DBHelper(getActivity());
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 db.delete("Expenses","id ="+ID,null);
                 dbHelper.close();
                 Intent intent = new Intent();
-                setResult(RESULT_OK, intent);
-                finish();
+                //setResult(RESULT_OK, intent);
+                //finish();
+                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK,intent);
+                getActivity().getSupportFragmentManager().popBackStackImmediate();
             }
         });
 
@@ -128,7 +135,7 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(ValidationCheck(CostTyp,Quantity,Price,Cost)){
-                    dbHelper = new DBHelper(context);
+                    dbHelper = new DBHelper(getActivity());
                     ContentValues cv = new ContentValues();
                     SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -157,19 +164,12 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
                     db.update("Expenses",cv,"id = ?",new String[]{ID.toString()});
                     dbHelper.close();
                     Intent intent = new Intent();
-                    setResult(RESULT_OK, intent);
-                    finish();
+                    getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK,intent);
+                    getActivity().getSupportFragmentManager().popBackStackImmediate();
                 }
             }
         });
-    }
-
-    protected Dialog onCreateDialog(int id){
-        if(id==ExpensesDataPicker.DIALOG_DATE){
-            DatePickerDialog DPD = new DatePickerDialog(this,EDP.myCallBack,EDP.Year,EDP.Month,EDP.Day);
-            return DPD;
-        }
-        return super.onCreateDialog(id);
+        return view;
     }
 
     private CompoundButton.OnCheckedChangeListener PetrolOnCheckedChangeListner = new CompoundButton.OnCheckedChangeListener() {
@@ -189,16 +189,12 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
 
     private  boolean ValidationCheck(EditText CostType,EditText Quantity,EditText Price,EditText Cost){
         if(CheckForText(CostType)&CheckForText(Quantity)&CheckForText(Price)&CheckForText(Cost)){
-            if(CheckComposition(Price,Quantity,Cost)){
+
                     return true;
-            }else {
-                //цена, количество, стоимость не соответствуют
-                Toast.makeText(this, "Не коррекино введены цена или стоимость", Toast.LENGTH_LONG).show();
-                return false;
-            }
+
         }else {
             //одна или несколько колонок не заполнены
-            Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Заполните все поля", Toast.LENGTH_LONG).show();
             return false;
         }
     }
@@ -208,24 +204,6 @@ public class ChangeOrRemoveExpenses extends AppCompatActivity {
             return false; // текст не заполнен
         }else {
             return true;  //  текст заполнен
-        }
-    }
-
-    private Double CompositionEditText(EditText editText1, EditText editText2){
-        Double FirstNumber = Double.valueOf(editText1.getText().toString());
-        Double SecondNumber = Double.valueOf(editText2.getText().toString());
-        return FirstNumber*SecondNumber;
-    }
-
-    //Проверяет равенство стоимоти и произведение цена на кол-во, если ячейки не заполнены возврашяет false
-    private boolean CheckComposition (EditText price, EditText quantity, EditText cost){
-        if(CheckForText(price)&CheckForText(quantity)&CheckForText(cost)) {
-            Double Cost1 = CompositionEditText(price, quantity);
-            Cost1 = (double) (Math.round(Cost1*100))/100;
-            Double Cost2 = Double.valueOf(cost.getText().toString());
-            return Double.compare(Cost1,Cost2)==0;
-        }else {
-            return false;
         }
     }
 }

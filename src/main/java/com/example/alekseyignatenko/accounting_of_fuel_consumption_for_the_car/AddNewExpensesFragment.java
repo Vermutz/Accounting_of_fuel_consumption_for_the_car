@@ -1,35 +1,31 @@
 package com.example.alekseyignatenko.accounting_of_fuel_consumption_for_the_car;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Switch;
 import android.widget.Toast;
 
-import java.text.DecimalFormat;
-import java.util.Calendar;
-
-public class AddNewExpenses extends AppCompatActivity {
+public class AddNewExpensesFragment extends Fragment {
 
     private DBHelper dbHelper;
-    private Context context;
-    private ExpensesDataPicker EDP;
 
     protected Button Data;
     private EditText CostTyp;
@@ -41,37 +37,35 @@ public class AddNewExpenses extends AppCompatActivity {
     private InputFilter CheckBoxOffInPutFilter[] = new InputFilter[]{};
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new_expenses);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_add_new_expenses,container,false);
 
-        setTitle(R.string.Title_Cost_Accounting);
+        getActivity().setTitle(R.string.title_activity_add_new_expenses);
 
-        Data = (Button) findViewById(R.id.buttonData);           //Дата
-        CostTyp = (EditText) findViewById(R.id.editText2);       //Тип затрат
-        Quantity = (EditText) findViewById(R.id.editText3);      //Количество
-        Price = (EditText) findViewById(R.id.editText4);       //Цена
-        Cost = (EditText) findViewById(R.id.editText5);         //Стоимость
+        Data = (Button) view.findViewById(R.id.buttonData);           //Дата
+        CostTyp = (EditText) view.findViewById(R.id.editText2);       //Тип затрат
+        Quantity = (EditText) view.findViewById(R.id.editText3);      //Количество
+        Price = (EditText) view.findViewById(R.id.editText4);       //Цена
+        Cost = (EditText) view.findViewById(R.id.editText5);         //Стоимость
 
-        CheckBoxPetrol = (CheckBox) findViewById(R.id.checkBox);
+        CheckBoxPetrol = (CheckBox) view.findViewById(R.id.checkBox);
 
         Quantity.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(15,3)});
         Price.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(15,2)});
         Cost.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(15,2)});
 
 
-        final Button Save =(Button) findViewById(R.id.button);
+        final Button Save =(Button) view.findViewById(R.id.button);
 
-        context = this;
 
-        EDP = new ExpensesDataPicker();
+
         CompositionTextWatcher compositionTextWatcher = new CompositionTextWatcher(Price,Quantity,Cost);
-        EDP.ExpensesDataPicker(context,Data);
+        LauncherActivity.EDP.ExpensesDataPicker(getActivity(),Data);
 
         Data.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog(ExpensesDataPicker.DIALOG_DATE);
+                getActivity().showDialog(ExpensesDataPicker.DIALOG_DATE);
             }
         });
 
@@ -85,7 +79,7 @@ public class AddNewExpenses extends AppCompatActivity {
             public void onClick(View v) {
                 if(ValidationCheck(CostTyp,Quantity,Price,Cost)) {
 
-                    dbHelper = new DBHelper(context);
+                    dbHelper = new DBHelper(getActivity());
                     // создаем объект для данных
                     ContentValues cv = new ContentValues();
 
@@ -116,36 +110,22 @@ public class AddNewExpenses extends AppCompatActivity {
                     db.insert("Expenses",null,cv);
                     dbHelper.close();
                     Intent intent = new Intent();
-                    setResult(RESULT_OK, intent);
-                    finish();
+                    //setResult(RESULT_OK, intent);
+                    //finish();
+                    getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK,intent);
+                    getActivity().getSupportFragmentManager().popBackStackImmediate();
                 }
             }
         });
-
+        return view;
     }
-
-    protected Dialog onCreateDialog(int id){
-        if(id==ExpensesDataPicker.DIALOG_DATE){
-            DatePickerDialog DPD = new DatePickerDialog(this,EDP.myCallBack,EDP.Year,EDP.Month,EDP.Day);
-            return DPD;
-        }
-        return super.onCreateDialog(id);
-    }
-
-
 
     private  boolean ValidationCheck(EditText CostType,EditText Quantity,EditText Price,EditText Cost){
         if(CheckForText(CostType)&CheckForText(Quantity)&CheckForText(Price)&CheckForText(Cost)){
-            if(CheckComposition(Price,Quantity,Cost)){
                                     return true;
-            }else {
-                //цена, количество, стоимость не соответствуют
-                Toast.makeText(this, "Не коррекино введены цена или стоимость", Toast.LENGTH_LONG).show();
-                return false;
-            }
         }else {
             //одна или несколько колонок не заполнены
-            Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Заполните все поля", Toast.LENGTH_LONG).show();
             return false;
         }
     }
@@ -174,21 +154,4 @@ public class AddNewExpenses extends AppCompatActivity {
         }
     }
 
-    private Double CompositionEditText(EditText editText1, EditText editText2){
-        Double FirstNumber = Double.valueOf(editText1.getText().toString());
-        Double SecondNumber = Double.valueOf(editText2.getText().toString());
-        return FirstNumber*SecondNumber;
-    }
-
-    //Проверяет равенство стоимоти и произведение цена на кол-во, если ячейки не заполнены возврашяет false
-    private boolean CheckComposition (EditText price, EditText quantity, EditText cost){
-        if(CheckForText(price)&CheckForText(quantity)&CheckForText(cost)) {
-            Double Cost1 = CompositionEditText(price, quantity);
-            Cost1 = (double) (Math.round(Cost1*100))/100;
-            Double Cost2 = Double.valueOf(cost.getText().toString());
-            return Double.compare(Cost1,Cost2)==0;
-        }else {
-            return false;
-        }
-    }
 }

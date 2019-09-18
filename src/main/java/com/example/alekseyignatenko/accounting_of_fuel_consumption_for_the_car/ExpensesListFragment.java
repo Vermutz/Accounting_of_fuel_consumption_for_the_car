@@ -1,67 +1,59 @@
 package com.example.alekseyignatenko.accounting_of_fuel_consumption_for_the_car;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
-public class MainActivity extends AppCompatActivity {
+public class ExpensesListFragment extends Fragment {
 
     private ListView ExpensesListView;
     private Intent intent;
-    private Context context;
+    //private Context context;
     private ArrayList<Expenses> arrayList;
     private BOXadapter boxadapter;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Button AddNewExpensesButton = findViewById(R.id.button2);
-        ExpensesListView = findViewById(R.id.ListViewMain);
-        context = this;
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_expenses_list,container,false);
+        Button AddNewExpensesButton = view.findViewById(R.id.button2);
+        ExpensesListView = view.findViewById(R.id.ListViewMain);
+        //context = this;
         arrayList = new ArrayList<Expenses>();
         CreateArrayListFromSQLDB();
-        boxadapter = new BOXadapter(context,arrayList);
+        boxadapter = new BOXadapter(getActivity(),arrayList);
         ExpensesListView.setAdapter(boxadapter);
+        final ExpensesListFragment ELF = this;
 
         AddNewExpensesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent = new Intent(context,AddNewExpenses.class);
-                startActivityForResult(intent,1);
+                //intent = new Intent(getActivity(),AddNewExpenses.class);
+                //startActivityForResult(intent,1);
+                AddNewExpensesFragment addNewExpensesFragment = new AddNewExpensesFragment();
+                addNewExpensesFragment.setTargetFragment(ELF,1);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.launch_frame,addNewExpensesFragment)
+                        .addToBackStack(AddNewExpensesFragment.class.getName())
+                        .commit();
             }
         });
         ExpensesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -69,23 +61,34 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Expenses exp = arrayList.get(position);
                 Integer ID = exp.ID;
-                intent = new Intent(context,ChangeOrRemoveExpenses.class);
-                intent.putExtra("ID",ID);
-                startActivityForResult(intent,2);
+                //intent = new Intent(getActivity(),ChangeOrRemoveExpenses.class);
+                //intent.putExtra("ID",ID);
+                //startActivityForResult(intent,2);
+                Bundle bundle = new Bundle();
+                bundle.putInt("ID",ID);
+                ChangeOrRemoveExpensesFragment changeOrRemoveExpensesFragment = new ChangeOrRemoveExpensesFragment();
+                changeOrRemoveExpensesFragment.setArguments(bundle);
+                changeOrRemoveExpensesFragment.setTargetFragment(ELF,1);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.launch_frame,changeOrRemoveExpensesFragment)
+                        .addToBackStack(AddNewExpensesFragment.class.getName())
+                        .commit();
             }
         });
 
         double Consumption = consumption();
         if(Consumption!=0) {
-            setTitle("Расход топлива = " + Consumption+"л/100км");
+            getActivity().setTitle("Расход топлива = " + Consumption+"л/100км");
         }else{
-            setTitle(getString(R.string.Title_Cost_Accounting));
+            getActivity().setTitle(getString(R.string.Title_Cost_Accounting));
         }
+        return view;
     }
 
 
     private void CreateArrayListFromSQLDB(){
-        DBHelper dbHelper = new DBHelper(this);
+        DBHelper dbHelper = new DBHelper(getActivity());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.query("Expenses",null,null,null,null,null,null);
         if(arrayList.size()>0){
@@ -139,14 +142,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         CreateArrayListFromSQLDB();
         boxadapter.notifyDataSetChanged();
         double Consumption = consumption();
         if(Consumption!=0) {
-            setTitle(getString(R.string.Title_Average_Fuel_Consumption) + Consumption+getString(R.string.Title_Unit_Of_Measurement));
+            getActivity().setTitle(getString(R.string.Title_Average_Fuel_Consumption) + Consumption+getString(R.string.Title_Unit_Of_Measurement));
         }else{
-            setTitle(getString(R.string.Title_Cost_Accounting));
+            getActivity().setTitle(getString(R.string.Title_Cost_Accounting));
         }
     }
 

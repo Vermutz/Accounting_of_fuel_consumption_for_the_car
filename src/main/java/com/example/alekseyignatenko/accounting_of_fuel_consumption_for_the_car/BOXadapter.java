@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+
+
 public class BOXadapter extends BaseAdapter {
 
     Context ctx;
