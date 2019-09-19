@@ -16,10 +16,12 @@ public class BOXadapter extends BaseAdapter {
     Context ctx;
     LayoutInflater lInflater;
     ArrayList<Expenses> objects;
+    BOXadapterValue BoXadapterValue;
 
-    BOXadapter(Context context,ArrayList<Expenses> expenses){
+    BOXadapter(Context context,BOXadapterValue boXadapterValue){
         ctx = context;
-        objects = expenses;
+        objects = boXadapterValue.arrayList;
+        BoXadapterValue = boXadapterValue;
         lInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
@@ -54,9 +56,9 @@ public class BOXadapter extends BaseAdapter {
 
         ((TextView) view.findViewById(R.id.tvData)).setText(exp.Data);
         ((TextView) view.findViewById(R.id.tvTypeCost)).setText(exp.CostType);
-        ((TextView) view.findViewById(R.id.tvQuantity)).setText("Количество ="+exp.Quantity);
-        ((TextView) view.findViewById(R.id.tvPrice)).setText("Цена =" + exp.Price);
-        ((TextView) view.findViewById(R.id.tvСost)).setText("Стоимость ="+exp.Cost);
+        ((TextView) view.findViewById(R.id.tvQuantity)).setText(BoXadapterValue.BOXadapterQuantity+exp.Quantity);
+        ((TextView) view.findViewById(R.id.tvPrice)).setText(BoXadapterValue.BOXadapterPrice + exp.Price);
+        ((TextView) view.findViewById(R.id.tvСost)).setText(BoXadapterValue.BOXadapterCost+exp.Cost);
 
         return view;
     }

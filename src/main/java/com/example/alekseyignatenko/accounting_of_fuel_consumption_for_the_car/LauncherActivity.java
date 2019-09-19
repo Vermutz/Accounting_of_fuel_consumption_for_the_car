@@ -55,10 +55,23 @@ public class LauncherActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
         switch (item.getItemId()){
-            case R.id.Settings:break;
-
-            case R.id.AboutProgram:break;
+            case R.id.Settings:
+                SettingsFragment settingsFragment = new SettingsFragment();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.launch_frame,settingsFragment)
+                        .addToBackStack(SettingsFragment.class.getName())
+                        .commit();
+                break;
+            case R.id.AboutProgram:
+                AboutProgramFragment aboutProgramFragment = new AboutProgramFragment();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.launch_frame,aboutProgramFragment)
+                        .addToBackStack(AboutProgramFragment.class.getName())
+                        .commit();
+                break;
+            default:break;
         }
         return super.onOptionsItemSelected(item);
     }

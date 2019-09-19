@@ -57,9 +57,9 @@ public class AddNewExpensesFragment extends Fragment {
 
         final Button Save =(Button) view.findViewById(R.id.button);
 
-
-
         CompositionTextWatcher compositionTextWatcher = new CompositionTextWatcher(Price,Quantity,Cost);
+        CostTypeTextWatcher costTypeTextWatcher = new CostTypeTextWatcher(CheckBoxPetrol,CostTyp);
+
         LauncherActivity.EDP.ExpensesDataPicker(getActivity(),Data);
 
         Data.setOnClickListener(new View.OnClickListener() {
@@ -73,6 +73,8 @@ public class AddNewExpensesFragment extends Fragment {
         Price.addTextChangedListener(compositionTextWatcher);
         Quantity.addTextChangedListener(compositionTextWatcher);
         Cost.addTextChangedListener(compositionTextWatcher);
+
+        CostTyp.addTextChangedListener(costTypeTextWatcher);
 
         Save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,7 +127,7 @@ public class AddNewExpensesFragment extends Fragment {
                                     return true;
         }else {
             //одна или несколько колонок не заполнены
-            Toast.makeText(getActivity(), "Заполните все поля", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getString(R.string.Validation_Check_Empty_Field), Toast.LENGTH_LONG).show();
             return false;
         }
     }
@@ -134,10 +136,12 @@ public class AddNewExpensesFragment extends Fragment {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if(isChecked){
+                CostTyp.setText("");
                 CostTyp.setHint(getString(R.string.Odometr));
                 CostTyp.setFilters(CheckBoxOnInPutFilter);
                 CostTyp.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
             }else{
+                CostTyp.setText("");
                 CostTyp.setHint(getString(R.string.Cost_Type));
                 CostTyp.setFilters(CheckBoxOffInPutFilter);
                 CostTyp.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);

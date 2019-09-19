@@ -38,7 +38,16 @@ public class ExpensesListFragment extends Fragment {
         //context = this;
         arrayList = new ArrayList<Expenses>();
         CreateArrayListFromSQLDB();
-        boxadapter = new BOXadapter(getActivity(),arrayList);
+
+        BOXadapterValue boXadapterValue = new BOXadapterValue();
+
+        boXadapterValue.arrayList = arrayList;
+
+        boXadapterValue.BOXadapterCost = getString(R.string.BOXadapterCost);
+        boXadapterValue.BOXadapterPrice = getString(R.string.BOXadapterPrice);
+        boXadapterValue.BOXadapterQuantity = getString(R.string.BOXadapterQuantity);
+
+        boxadapter = new BOXadapter(getActivity(),boXadapterValue);
         ExpensesListView.setAdapter(boxadapter);
         final ExpensesListFragment ELF = this;
 
@@ -79,7 +88,7 @@ public class ExpensesListFragment extends Fragment {
 
         double Consumption = consumption();
         if(Consumption!=0) {
-            getActivity().setTitle("Расход топлива = " + Consumption+"л/100км");
+            getActivity().setTitle(getString(R.string.Title_Average_Fuel_Consumption) + Consumption+getString(R.string.Title_Unit_Of_Measurement));
         }else{
             getActivity().setTitle(getString(R.string.Title_Cost_Accounting));
         }

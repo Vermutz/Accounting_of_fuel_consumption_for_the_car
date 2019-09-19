@@ -8,26 +8,34 @@
     <string name="Save_Button">Сохранить</string>
     <string name="Add_New_Expenses_Button">Добавить запись</string>
 
-//наименования
+    //наименования
     <string name="Petrol">Бензин</string>
     <string name="Cost_Type">Тип затрат</string>
     <string name="Data">Дата</string>
 
-//наименования и цена деления
+    //наименования и цена деления
     <string name="Quantity">Количество (л)</string>
     <string name="Price">Цена (руб/л)</string>
     <string name="Cost">Стоимость (руб)</string>
     <string name="Odometr">Одометр (км)</string>
 
-//заголовки
+    //заголовки
     <string name="title_activity_add_new_expenses">Добавить</string>
     <string name="Title_Cost_Accounting">Учет авто расходов</string>
     <string name="Title_Average_Fuel_Consumption">Средний расход топлива =</string>
     <string name="Title_Unit_Of_Measurement">л/100км</string>
     <string name="Title_Change_Or_Remove_Expenses">Редактировать</string>
 
-//заголовки меню
+    //заголовки меню
     <string name="Menu_About_Program">О программе</string>
     <string name="Menu_Settings">Настройки</string>
+
+    //BOXadapter
+    <string name="BOXadapterCost">Стоимость =</string>
+    <string name="BOXadapterPrice">Цена =</string>
+    <string name="BOXadapterQuantity">Количество =</string>
+
+    //Проверка
+    <string name="Validation_Check_Empty_Field">Заполните все поля</string>
 
 </resources>
