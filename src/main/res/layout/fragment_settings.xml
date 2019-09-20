@@ -1,9 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".SettingsFragment">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/Choose_Language"/>
+    <RadioGroup
+        android:id="@+id/radioGroupLanguageChoose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/radioButtonLanguageEN"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Language_English"
+            android:checked="true"/>
+
+        <RadioButton
+            android:id="@+id/radioButtonLanguageRus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Language_Russian" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/buttonLanguageApply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/Language_Apply" />
+
+
+</LinearLayout>

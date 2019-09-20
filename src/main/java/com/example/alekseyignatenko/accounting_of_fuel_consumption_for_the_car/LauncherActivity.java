@@ -2,12 +2,17 @@ package com.example.alekseyignatenko.accounting_of_fuel_consumption_for_the_car;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import java.util.Locale;
 
 public class LauncherActivity extends AppCompatActivity {
 
@@ -17,6 +22,11 @@ public class LauncherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String lang = sharedPreferences.getString(SettingsFragment.LANG,SettingsFragment.DEFAULT);
+
+        setLenguage(lang);
 
         //EDP = new ExpensesDataPicker();
 
@@ -74,5 +84,13 @@ public class LauncherActivity extends AppCompatActivity {
             default:break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setLenguage(String Lenguage){
+        Locale locale = new Locale(Lenguage);
+        Locale.setDefault(locale);
+        Configuration configuration = new Configuration();
+        configuration.locale=locale;
+        getBaseContext().getResources().updateConfiguration(configuration, null);
     }
 }

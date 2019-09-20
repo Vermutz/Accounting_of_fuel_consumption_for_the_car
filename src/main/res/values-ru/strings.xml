@@ -1,0 +1,49 @@
+<resources>
+    //название
+    <string name="app_name">Учет авто расходов</string>
+
+    //кнопки
+    <string name="Delet_Expenses_Button">Удалить</string>
+    <string name="Change_Expenses_Button">Изменить</string>
+    <string name="Save_Button">Сохранить</string>
+    <string name="Add_New_Expenses_Button">Добавить запись</string>
+
+    //наименования
+    <string name="Petrol">Бензин</string>
+    <string name="Cost_Type">Тип затрат</string>
+    <string name="Data">Дата</string>
+
+    //наименования и цена деления
+    <string name="Quantity">Количество (л)</string>
+    <string name="Price">Цена (руб/л)</string>
+    <string name="Cost">Стоимость (руб)</string>
+    <string name="Odometr">Одометр (км)</string>
+
+    //заголовки
+    <string name="title_activity_add_new_expenses">Добавить</string>
+    <string name="Title_Cost_Accounting">Учет авто расходов</string>
+    <string name="Title_Average_Fuel_Consumption">Средний расход топлива =</string>
+    <string name="Title_Unit_Of_Measurement">л/100км</string>
+    <string name="Title_Change_Or_Remove_Expenses">Редактировать</string>
+
+    //заголовки меню
+    <string name="Menu_About_Program">О программе</string>
+    <string name="Menu_Settings">Настройки</string>
+
+    //BOXadapter
+    <string name="BOXadapterCost">Стоимость =</string>
+    <string name="BOXadapterPrice">Цена =</string>
+    <string name="BOXadapterQuantity">Количество =</string>
+
+    //Проверка
+    <string name="Validation_Check_Empty_Field">Заполните все поля</string>
+
+    //AboutProgram
+    <string name="About_Programe_Developer">Разработчик</string>
+    <string name="About_Programe_Developer_Name">Игнатенко Алексей Андреевич</string>
+
+    //Setting
+    <string name="Choose_Language">Выберите язык</string>
+    <string name="Language_Apply">Применить</string>
+
+</resources>

@@ -1,41 +1,51 @@
 <resources>
     //название
-    <string name="app_name">Учет авто расходов</string>
+    <string name="app_name">Auto expenses</string>
 
     //кнопки
-    <string name="Delet_Expenses_Button">Удалить</string>
-    <string name="Change_Expenses_Button">Изменить</string>
-    <string name="Save_Button">Сохранить</string>
-    <string name="Add_New_Expenses_Button">Добавить запись</string>
+    <string name="Delet_Expenses_Button">Delete</string>
+    <string name="Change_Expenses_Button">Change</string>
+    <string name="Save_Button">Save</string>
+    <string name="Add_New_Expenses_Button">Add a note</string>
 
     //наименования
-    <string name="Petrol">Бензин</string>
-    <string name="Cost_Type">Тип затрат</string>
-    <string name="Data">Дата</string>
+    <string name="Petrol">Petrol</string>
+    <string name="Cost_Type">Cost type</string>
+    <string name="Data">Data</string>
 
     //наименования и цена деления
-    <string name="Quantity">Количество (л)</string>
-    <string name="Price">Цена (руб/л)</string>
-    <string name="Cost">Стоимость (руб)</string>
-    <string name="Odometr">Одометр (км)</string>
+    <string name="Quantity">Quantity (l)</string>
+    <string name="Price">Price (rub/l)</string>
+    <string name="Cost">Cost (rub)</string>
+    <string name="Odometr">Odometr (km)</string>
 
     //заголовки
-    <string name="title_activity_add_new_expenses">Добавить</string>
-    <string name="Title_Cost_Accounting">Учет авто расходов</string>
-    <string name="Title_Average_Fuel_Consumption">Средний расход топлива =</string>
-    <string name="Title_Unit_Of_Measurement">л/100км</string>
-    <string name="Title_Change_Or_Remove_Expenses">Редактировать</string>
+    <string name="title_activity_add_new_expenses">Add</string>
+    <string name="Title_Cost_Accounting">Auto expenses</string>
+    <string name="Title_Average_Fuel_Consumption">Average fuel consumption =</string>
+    <string name="Title_Unit_Of_Measurement">l/100km</string>
+    <string name="Title_Change_Or_Remove_Expenses">Edit</string>
 
     //заголовки меню
-    <string name="Menu_About_Program">О программе</string>
-    <string name="Menu_Settings">Настройки</string>
+    <string name="Menu_About_Program">About program</string>
+    <string name="Menu_Settings">Settings</string>
 
     //BOXadapter
-    <string name="BOXadapterCost">Стоимость =</string>
-    <string name="BOXadapterPrice">Цена =</string>
-    <string name="BOXadapterQuantity">Количество =</string>
+    <string name="BOXadapterCost">Cost =</string>
+    <string name="BOXadapterPrice">Price =</string>
+    <string name="BOXadapterQuantity">Qiantity =</string>
 
     //Проверка
-    <string name="Validation_Check_Empty_Field">Заполните все поля</string>
+    <string name="Validation_Check_Empty_Field">Fill in all the fields</string>
+
+    //AboutProgram
+    <string name="About_Programe_Developer">Developer</string>
+    <string name="About_Programe_Developer_Name">Ignatenko Alexey Andreevich</string>
+
+    //Settings
+    <string name="Choose_Language">Choose language</string>
+    <string name="Language_English" translatable="false">English</string>
+    <string name="Language_Russian" translatable="false">Русский</string>
+    <string name="Language_Apply">Apply</string>
 
 </resources>

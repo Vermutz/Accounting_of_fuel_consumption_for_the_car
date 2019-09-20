@@ -17,6 +17,7 @@ public class AboutProgramFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_about_program,container,false);
+        getActivity().setTitle(R.string.Menu_About_Program);
         return view;
     }
 }
