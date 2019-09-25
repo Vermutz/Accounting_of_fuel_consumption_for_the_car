@@ -36,29 +36,21 @@ public class CompositionTextWatcher implements TextWatcher {
     public void afterTextChanged(Editable s) {
         if(Cost.hasFocus()){
             if(CheckForText(Cost)){             //Проверим есть ли текст или осталась точка. заменяем току на пустую строку
-                Cost.setGravity(Gravity.RIGHT);
                 CostEditTextChanged();
             }else {
-                Cost.setGravity(Gravity.LEFT);
                 RemoveText(Cost);
             }
         }else if (Quantity.hasFocus()){
             if(CheckForText(Quantity)){          //Если нет цены или количество то убераем стоимость
-                Quantity.setGravity(Gravity.RIGHT);
                 QuantityEditTextChenged();
             }else {
-                Quantity.setGravity(Gravity.LEFT);
-                Cost.setGravity(Gravity.LEFT);
                 RemoveText(Quantity);
                 RemoveText(Cost);
             }
         }else if (Price.hasFocus()){
             if(CheckForText(Price)){
-                Price.setGravity(Gravity.RIGHT);
                 PriceEditTextChanged();
             }else {
-                Price.setGravity(Gravity.LEFT);
-                Cost.setGravity(Gravity.LEFT);
                 RemoveText(Price);
                 RemoveText(Cost);
             }
@@ -137,8 +129,6 @@ public class CompositionTextWatcher implements TextWatcher {
         Price.setText(price.toString());
         Price.addTextChangedListener(this);
         ChangedET = PRICE;
-        Price.setGravity(Gravity.RIGHT);
-
     }
     private  void QuantityChange(){
         Double cost = Double.valueOf(Cost.getText().toString());
@@ -148,7 +138,6 @@ public class CompositionTextWatcher implements TextWatcher {
         Quantity.setText(quantity.toString());
         Quantity.addTextChangedListener(this);
         ChangedET = QUANTITY;
-        Quantity.setGravity(Gravity.RIGHT);
     }
     private void CostChange(){
         Double SetCost = (double) Math.round(CompositionEditText(Price, Quantity) * 100) / 100;
@@ -156,7 +145,6 @@ public class CompositionTextWatcher implements TextWatcher {
         Cost.setText(SetCost.toString());
         Cost.addTextChangedListener(this);
         ChangedET = COST;
-        Cost.setGravity(Gravity.RIGHT);
     }
     private void RemoveText(EditText editText){
         editText.removeTextChangedListener(this);

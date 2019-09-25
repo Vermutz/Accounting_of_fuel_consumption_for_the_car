@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +22,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class AddNewExpensesFragment extends Fragment {
 
     private DBHelper dbHelper;
 
+    private TextView CostTypeOdometrTextView;
     protected Button Data;
     private EditText CostTyp;
     private EditText Quantity;
@@ -47,6 +50,8 @@ public class AddNewExpensesFragment extends Fragment {
         Quantity = (EditText) view.findViewById(R.id.editText3);      //Количество
         Price = (EditText) view.findViewById(R.id.editText4);       //Цена
         Cost = (EditText) view.findViewById(R.id.editText5);         //Стоимость
+
+        CostTypeOdometrTextView = (TextView) view.findViewById(R.id.CostTypeOdometrtextview);
 
         CheckBoxPetrol = (CheckBox) view.findViewById(R.id.checkBox);
 
@@ -137,12 +142,14 @@ public class AddNewExpensesFragment extends Fragment {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if(isChecked){
                 CostTyp.setText("");
-                CostTyp.setHint(getString(R.string.Odometr));
+                CostTypeOdometrTextView.setText(getString(R.string.Odometr));
+                CostTyp.setGravity(Gravity.LEFT);
                 CostTyp.setFilters(CheckBoxOnInPutFilter);
                 CostTyp.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
             }else{
                 CostTyp.setText("");
-                CostTyp.setHint(getString(R.string.Cost_Type));
+                CostTypeOdometrTextView.setText(getString(R.string.Cost_Type));
+                CostTyp.setGravity(Gravity.RIGHT);
                 CostTyp.setFilters(CheckBoxOffInPutFilter);
                 CostTyp.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
             }

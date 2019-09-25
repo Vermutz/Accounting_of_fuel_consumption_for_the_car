@@ -5,10 +5,10 @@
     <item
         android:id="@+id/Settings"
         android:title="@string/Menu_Settings"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/AboutProgram"
         android:title="@string/Menu_About_Program"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu>
